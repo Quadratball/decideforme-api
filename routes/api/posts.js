@@ -38,8 +38,11 @@ router.post("/create", async (req, res) => {
   try {
     UserModel.findOne(filter, (err, user) => {
       PostModel.create(req.body.post, (err, post) => {
-        console.log(post);
-        user.post.push(post);
+        if (err) {
+          res.status(400).send(err);
+        }
+        console.log(post.answers);
+        user.posts.push(post);
         user.save();
         return res.status(200).send();
       });
