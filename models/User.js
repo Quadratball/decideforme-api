@@ -1,9 +1,15 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  name: {
+  deviceId: {
     type: String,
-    requried: true,
+    required: true,
+    min: 6,
+    max: 255,
+  },
+  userName: {
+    type: String,
+    required: true,
     min: 6,
     max: 255,
   },
@@ -11,14 +17,12 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  posts: {
-    type: [String],
-    default: undefined,
-  },
-  answers: {
-    type: [String],
-    default: undefined,
-  },
+  posts: [
+    {
+      ref: "Post",
+      type: mongoose.Schema.Types.ObjectId,
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Answer = require("./Answer");
 
 const postSchema = new mongoose.Schema({
   question: {
@@ -11,14 +12,8 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  respondentId: {
-    type: String,
-    default: "",
-  },
-  answer: {
-    type: String,
-    min: 6,
-    max: 255,
+  answers: {
+    Answer: [Answer.schema],
   },
   created: {
     type: Date,

@@ -7,9 +7,8 @@ const UserModel = require("../../models/User");
 async function checkUserId(req, res, next) {
   // Get UserId from author
   try {
-    const user = await UserModel.findOne({ name: req.body.name });
-    console.log(user);
-    if (user._id === req.body.userId) {
+    const userExists = await UserModel.findById(req.body.userId);
+    if (userExists) {
       next();
       return;
     } else {
@@ -21,10 +20,10 @@ async function checkUserId(req, res, next) {
   }
 }
 
-// GET All unanswered Posts
+// GET all posts
 router.get("/", async (req, res) => {
   const filter = {
-    respondentId: null || undefined || answer === "",
+    respondentId: null,
   };
   const posts = await PostModel.find(filter);
   res.send(posts);
