@@ -11,6 +11,8 @@ mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {
   useUnifiedTopology: true,
 });
 
+const PORT = process.env.PORT || 3000;
+
 // Users
 const userRoute = require("./routes/api/users");
 app.use("/api/users", userRoute);
@@ -19,11 +21,8 @@ app.use("/api/users", userRoute);
 const postsRoute = require("./routes/api/posts");
 app.use("/api/posts", postsRoute);
 
-// Landing
 app.get("/", (req, res) => {
   res.status(200).send("<h1>Server is running.</h1>");
 });
-
-const PORT = process.env.PORT || 3000;
 
 app.listen(PORT);
