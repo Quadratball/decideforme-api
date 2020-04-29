@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const answerModel = new mongoose.Schema({
+  number: {
+    type: Number,
+    default: 0,
+  },
   text: {
     type: String,
     min: 6,
