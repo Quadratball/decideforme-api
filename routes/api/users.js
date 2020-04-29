@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const UserModel = require("../../models/User");
 
+// POST Register a new user
 router.post("/register", async (req, res) => {
   // Check if deviceId already exists
   const userExists = await UserModel.findOne({ deviceId: req.body.deviceId });
@@ -22,7 +23,10 @@ router.post("/register", async (req, res) => {
 // GET User by _id
 router.get("/:deviceId", async (req, res) => {
   try {
-    const userExists = await UserModel.findOne({ _id: req.params.deviceId });
+    const filter = {
+      deviceId: req.params.deviceId,
+    };
+    const userExists = await UserModel.findOne(filter);
     if (userExists) {
       res.send(userExists);
     } else {

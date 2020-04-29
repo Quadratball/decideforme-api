@@ -8,13 +8,7 @@ const postSchema = new mongoose.Schema({
     min: 6,
     max: 255,
   },
-  authorId: {
-    type: String,
-    required: true,
-  },
-  answers: {
-    Answer: [Answer.schema],
-  },
+  answers: [Answer.schema],
   created: {
     type: Date,
     default: Date.now,

@@ -30,16 +30,25 @@ router.get("/", async (req, res) => {
 });
 
 // POST Create a new post
-router.post("/new", async (req, res) => {
-  const post = new PostModel({
-    question: req.body.question,
-    authorId: req.body.userId,
-  });
+router.post("/create", async (req, res) => {
+  // console.log(req.body);
+  const filter = {
+    deviceId: req.body.deviceId,
+  };
   try {
-    const savedPost = await post.save();
-    res.status(200).send(savedPost);
+    UserModel.findOne(filter, (err, user) => {
+      PostModel.create(req.body.post, (err, post) => {
+        if (err) {
+          res.status(400).send(err);
+        }
+        console.log(post.answers);
+        user.posts.push(post);
+        user.save();
+        return res.status(200).send();
+      });
+    });
   } catch (error) {
-    res.status(400).send(error);
+    res.send(404).send(error);
   }
 });
 
