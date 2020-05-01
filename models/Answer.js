@@ -4,10 +4,11 @@ const answerModel = new mongoose.Schema({
   _id: false,
   number: {
     type: Number,
-    default: 0
+    required: true
   },
   text: {
     type: String,
+    required: true,
     min: 6,
     max: 255
   },

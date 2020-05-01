@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
   },
   created: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
   posts: [{
     type: mongoose.Schema.Types.ObjectId,

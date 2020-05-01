@@ -34,5 +34,6 @@ app.use("/api/posts", postsRoute);
 app.use(indexRoute);
 
 // Starting server
-const PORT = process.env.PORT || 3000;
-app.listen(80, "127.0.0.1", () => {console.log("Server started")});
+const PORT  = process.env.PORT  || 3000;
+const IP    = process.env.IP    || "127.0.0.1"
+app.listen(80, IP, () => {console.log("Server started")});
