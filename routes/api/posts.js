@@ -1,75 +1,64 @@
 // RELATIVE-ROUTE   METHOD  DESCRIPTION
-// ========================================
+// ===========================================
 // /                GET     get all posts
 // /                POST    create new post
 // /:id             DELETE  delete post by _id
-// ========================================
+// ============================================
 
-const express = require("express");
-const router = express.Router();
-const PostModel = require("../../models/Post");
-const UserModel = require("../../models/User");
+// Requires
+const router      = require("express").Router();
+const PostModel   = require("../../models/Post");
+const UserModel   = require("../../models/User");
+const middleware  = require("../../middleware");
 
-// middleware to see if user is allowed
-async function checkUserId(req, res, next) {
-  // Get UserId from author
-  try {
-    const userExists = await UserModel.findOne({deviceId: req.body.deviceId});
-    if (userExists) {return next()}
-    else {return res.status(401).send("Unauthorized.")}
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send(err);
-  }
-}
+// HTTP error strings
+const res400 = "Bad request"
+const res401 = "Unauthorized";
+const res500 = "Internal server error";
 
 // GET all posts
 router.get("/", async (req, res) => {
-  const posts = await PostModel.find();
-  res.send(posts);
+  try{
+    const posts = await PostModel.find();
+    res.status(200).send(posts);
+  } catch (err){
+    console.log(err);
+    res.status(500).send(res500);
+  }
 });
 
 // POST Create a new post
-router.post("/", checkUserId, async (req, res) => {
-  const filter = {deviceId: req.body.deviceId};
+router.post("/", middleware.checkUserId, async (req, res) => {
+  req.body.post.answers.forEach((answer, index) => {answer.number = index});
   try {
-    UserModel.findOne(filter, (err, user) => {
-      if(err){
-        console.log(err);
-        res.status(400).send(err);
-      } else {
-        req.body.post.answers.forEach((answer, index) => {answer.number = index});
-        PostModel.create(req.body.post, (err, post) => {
-          if (err) {
-            console.log(err);
-            res.status(400).send(err);
-          } else {
-            console.log(post.answers);
-            user.posts.push(post);
-            user.save((err, user) =>{
-              if(err){
-                console.log(err);
-                res.status(400).send(err);
-              } else {
-                return res.status(200).send(user);
-              }
-            });
-          }
-        });
-      }
-    });
+    var   user  = await UserModel.findOne({deviceId: req.body.deviceId});
+    const post  = await PostModel.create(req.body.post);
+    user.posts.push(post);
+    user.save();
+    console.log("Created post:\n" + post)
+    res.status(200).send(post);
   } catch (err) {
     console.log(err)
-    res.send(404).send(err);
+    res.send(500).send(res500);
   }
 });
 
 // DELETE A Post by _id and UserId
-router.delete("/:id", function (req, res) {
-  PostModel.findByIdAndDelete(req.params.id, (err, post) =>{
-    if(err){console.log(err)}
-    else{res.status(200).send("Delete post with id: " + req.params.id);}
-  });
+router.delete("/:id", async (req, res) => {
+  try {
+    const post = await PostModel.findByIdAndDelete(req.params.id);
+    if(post){
+      var user = await UserModel.findOne({posts: post._id});
+      user.posts.pull(post._id);
+      user.save();
+      console.log("Deleted Post:\n" + post);
+      res.status(200).send(post);
+    }
+    else {res.status(400).send(res400)}
+  } catch(err) {
+    console.log(err);
+    res.status(500).send(res500);
+  }
 
 });
 

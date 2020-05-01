@@ -26,7 +26,6 @@ mongoose.connect('mongodb://194.13.80.247:80', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
-//test-comment....
 
 // Routes
 app.use("/api/users", userRoute);

@@ -3,17 +3,19 @@
 // /                POST    create new user
 // /:deviceId       GET     get info about user
 // /:devideId       DELETE  delete user
-// /:devideId       PUT     change username
 // ========================================
 
 const router    = require("express").Router();
 const UserModel = require("../../models/User");
 
+// HTTP error strings
+const res500 = "Internal server error";
+
 // POST Register a new user
 router.post("/", async (req, res) => {
   // Check if deviceId already exists
   const userExists = await UserModel.findOne({ deviceId: req.body.deviceId });
-  if (userExists) {return res.status(400).send()}
+  if (userExists) {return res.status(400).send("User already exists")}
   else {
     const user = new UserModel({
       deviceId: req.body.deviceId,
@@ -25,24 +27,21 @@ router.post("/", async (req, res) => {
       res.status(200).send(savedUser);
     } catch (err) {
       console.log(err);
-      res.status(400).send(err);
+      res.status(500).send(res500);
     }
   }
 });
 
-// GET User by _id
+// GET User by deviceId
 router.get("/:deviceId", async (req, res) => {
   try {
     const filter = {deviceId: req.params.deviceId};
-    const userExists = await UserModel.findOne(filter);
-    if (userExists) {
-      res.send(userExists);
-    } else {
-      res.status(404).send("No user found with id of " + deviceId);
-    }
+    const user = await UserModel.findOne(filter);
+    if (user){res.status(200).send(user)}
+    else {res.status(404).send("No user found with id of " + deviceId)}
   } catch (err) {
     console.log(err)
-    res.status(500).send(err);
+    res.status(500).send(res500);
   }
 });
 
@@ -52,13 +51,16 @@ router.delete("/:deviceId", async (req, res) => {
   try {
     const removedUser = await UserModel.findOneAndRemove(filter);
     console.log("Deleted User:\n" + removedUser);
-    res.status(200).send("Removed user with deviceId: " + req.params.deviceId);
+    res.status(200).send(removedUser);
   } catch (err) {
     console.log(err);
-    res.status(500).send(err);
+    res.status(500).send(res500);
   }
 });
 
+
+// Do we need this?
+/*
 // PUT Update a user by deviceId
 router.put("/:deviceId", async (req, res) => {
   const filter = {deviceId: req.params.deviceId};
@@ -73,5 +75,6 @@ router.put("/:deviceId", async (req, res) => {
     res.status(500).send(err);
   }
 });
+*/
 
 module.exports = router;
