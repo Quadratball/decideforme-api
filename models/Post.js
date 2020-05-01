@@ -6,13 +6,13 @@ const postSchema = new mongoose.Schema({
     type: String,
     requried: true,
     min: 6,
-    max: 255,
+    max: 255
   },
   answers: [Answer.schema],
   created: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 module.exports = mongoose.model("Post", postSchema);

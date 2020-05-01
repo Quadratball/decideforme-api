@@ -1,3 +1,10 @@
+// RELATIVE-ROUTE   METHOD  DESCRIPTION
+// ========================================
+// /                GET     get all posts
+// /                POST    create new post
+// /                DELETE  deledcte post by _id
+// ========================================
+
 const express = require("express");
 const router = express.Router();
 const PostModel = require("../../models/Post");
@@ -8,37 +15,28 @@ async function checkUserId(req, res, next) {
   // Get UserId from author
   try {
     const userExists = await UserModel.findById(req.body.userId);
-    if (userExists) {
-      next();
-      return;
-    } else {
-      res.status(401).send("Unauthorized.");
-      return;
-    }
-  } catch (error) {
-    return res.status(500).send(error);
+    if (userExists) {return next()}
+    else {return res.status(401).send("Unauthorized.")}
+  } catch (err) {
+    console.log(err);
+    return res.status(500).send(err);
   }
 }
 
 // GET all posts
 router.get("/", async (req, res) => {
-  const filter = {
-    respondentId: null,
-  };
-  const posts = await PostModel.find(filter);
+  const posts = await PostModel.find();
   res.send(posts);
 });
 
 // POST Create a new post
-router.post("/create", async (req, res) => {
-  // console.log(req.body);
-  const filter = {
-    deviceId: req.body.deviceId,
-  };
+router.post("/", async (req, res) => {
+  const filter = {deviceId: req.body.deviceId};
   try {
     UserModel.findOne(filter, (err, user) => {
       PostModel.create(req.body.post, (err, post) => {
         if (err) {
+          console.log(err);
           res.status(400).send(err);
         }
         console.log(post.answers);

@@ -5,24 +5,22 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     min: 6,
-    max: 255,
+    max: 255
   },
   userName: {
     type: String,
     required: true,
     min: 6,
-    max: 255,
+    max: 255
   },
   created: {
     type: Date,
     default: Date.now(),
   },
-  posts: [
-    {
-      ref: "Post",
-      type: mongoose.Schema.Types.ObjectId,
-    },
-  ],
+  posts: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Post"
+  }]
 });
 
 module.exports = mongoose.model("User", userSchema);
