@@ -1,11 +1,12 @@
 // Requires
-const express     = require("express");
-const mongoose    = require("mongoose");
-const dotenv      = require("dotenv");
+const express   = require("express");
+const mongoose  = require("mongoose");
+const dotenv    = require("dotenv");
 
-const userRoute   = require("./routes/api/users");
-const postsRoute  = require("./routes/api/posts");
-const indexRoute  = require("./routes/index");
+const userRoute     = require("./routes/api/users");
+const postsRoute    = require("./routes/api/posts");
+const answersRoute  = require("./routes/api/answers");
+const indexRoute    = require("./routes/index");
 
 // Express
 const app = express();
@@ -30,6 +31,7 @@ mongoose.connect('mongodb://194.13.80.247:80', {
 // Routes
 app.use("/api/users", userRoute);
 app.use("/api/posts", postsRoute);
+app.use("/api/posts/:postId", answersRoute)
 app.use(indexRoute);
 
 // Starting server

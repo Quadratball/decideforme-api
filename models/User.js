@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+const mongoose  = require("mongoose");
+const voteModel = require("./Vote");
 
 const userSchema = new mongoose.Schema({
   deviceId: {
@@ -18,9 +19,10 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
   posts: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: mongoose.Types.ObjectId,
     ref: "Post"
-  }]
+  }],
+  votes: [voteModel.schema]
 });
 
 module.exports = mongoose.model("User", userSchema);

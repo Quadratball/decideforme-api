@@ -13,11 +13,21 @@ const middleware  = require("../../middleware");
 
 // HTTP error strings
 const res400 = "Bad request"
-const res401 = "Unauthorized";
 const res500 = "Internal server error";
 
 // GET all posts
 router.get("/", async (req, res) => {
+  try{
+    const posts = await PostModel.find();
+    res.status(200).send(posts);
+  } catch (err){
+    console.log(err);
+    res.status(500).send(res500);
+  }
+});
+
+// GET specific post
+router.get("/TODO", async (req, res) => {
   try{
     const posts = await PostModel.find();
     res.status(200).send(posts);
@@ -39,7 +49,7 @@ router.post("/", middleware.checkUserId, async (req, res) => {
     res.status(200).send(post);
   } catch (err) {
     console.log(err)
-    res.send(500).send(res500);
+    res.status(500).send(res500);
   }
 });
 
