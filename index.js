@@ -1,7 +1,7 @@
 // Requires
+require("dotenv").config();
 const express   = require("express");
 const mongoose  = require("mongoose");
-const dotenv    = require("dotenv");
 
 const userRoute     = require("./routes/api/users");
 const postsRoute    = require("./routes/api/posts");
@@ -11,21 +11,11 @@ const indexRoute    = require("./routes/index");
 // Express
 const app = express();
 app.use(express.json());
-dotenv.config();
 
 // Mongoose
-/*
 mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-});
-*/
-mongoose.connect('mongodb://194.13.80.247:80', {
-    user: "GnHNAGW6GoDkph2Jr97v",
-    pass: "mZdJSdKBee4DkCRSWQ6j",
-    dbName: "DecideForMe",
-    useNewUrlParser: true,
-    useUnifiedTopology: true
 });
 
 // Routes
@@ -36,5 +26,5 @@ app.use(indexRoute);
 
 // Starting server
 const PORT  = process.env.PORT  || 3000;
-const IP    = process.env.IP    || "127.0.0.1"
-app.listen(80, IP, () => {console.log("Server started")});
+const IP    = process.env.IP    || "127.0.0.1" // try 0.0.0.0 if you get an error. if you have still have errors just use app.listen(PORT);
+app.listen(PORT, IP, () => {console.log("Server started on " + IP + ":" + PORT)});

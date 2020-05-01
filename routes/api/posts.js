@@ -59,6 +59,11 @@ router.delete("/:id", async (req, res) => {
     const post = await PostModel.findByIdAndDelete(req.params.id);
     if(post){
       var user = await UserModel.findOne({posts: post._id});
+      var users = await UserModel.find({votes: {post: post._id}});
+      users.forEach(user => {
+        user.votes.pull({post: post._id});
+        user.save();
+      });
       user.posts.pull(post._id);
       user.save();
       console.log("Deleted Post:\n" + post);
